@@ -1,0 +1,8 @@
+name: PrisonScoreboard
+author: LCastr0
+main: com.lcastr0.PrisonScoreboard.PrisonScoreboard
+version: 1.5
+depend: [Votifier, PermissionsEx, Vault, KillCounter, Craftconomy3, CodelanxLib]
+commands:
+  psvote:
+    description: Sets/changes vote counter
