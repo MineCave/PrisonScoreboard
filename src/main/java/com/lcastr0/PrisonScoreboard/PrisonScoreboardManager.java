@@ -38,7 +38,7 @@ public class PrisonScoreboardManager {
     public PrisonScoreboardManager(UUID uuid){
         this.uuid = uuid;
         this.title = ConfigHelper.getScoreboard().getTitle();
-        this.linesList = instance.getConfig().getStringList("scoreboard.lines");
+        this.linesList = instance.getLinesList();
         managers.put(uuid, this);
     }
 

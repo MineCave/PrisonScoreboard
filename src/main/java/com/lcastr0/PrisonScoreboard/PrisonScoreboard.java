@@ -12,6 +12,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class PrisonScoreboard extends JavaPlugin {
@@ -21,9 +23,12 @@ public class PrisonScoreboard extends JavaPlugin {
     public Economy econ;
     public VoteReceiver receiver;
 
+    private List<String> linesList = new ArrayList<>();
+
     @Override
     public void onEnable(){
         // TODO
+        instance = this;
         this.getConfig().options().copyDefaults(true);
         this.saveDefaultConfig();
         this.getServer().getPluginManager().registerEvents(new QuitEvent(), this);
@@ -31,8 +36,8 @@ public class PrisonScoreboard extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(new VoteEvent(), this);
         this.getServer().getPluginManager().registerEvents(new JoinEvent(), this);
         this.getCommand("psvote").setExecutor(new VoteCommand());
+        this.linesList = this.getConfig().getStringList("scoreboard.lines");
         setupEcon();
-        instance = this;
         ConfigHelper.getRanks();
         ConfigHelper.getScoreboard();
         ConfigHelper.getTags();
@@ -48,6 +53,10 @@ public class PrisonScoreboard extends JavaPlugin {
         this.reloadConfig();
         this.getConfig().set("votes", this.receiver.getVotes());
         this.saveConfig();
+    }
+
+    public List<String> getLinesList(){
+        return this.linesList;
     }
 
     private void updateScoreboard(){
