@@ -11,27 +11,22 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class QuitEvent implements Listener {
 
     @EventHandler
-    public void onPlayerQuit(PlayerQuitEvent event){
-        Player player = event.getPlayer();
-        PrisonScoreboardManager.removeScoreboard(player.getUniqueId());
-        for(Player pl : Bukkit.getOnlinePlayers()){
-            if(!pl.getUniqueId().toString().equals(event.getPlayer().getUniqueId().toString())) {
-                PrisonScoreboardManager psm = PrisonScoreboardManager.getManager(pl.getUniqueId());
-                psm.updateScoreboard();
-            }
-        }
+    private void onPlayerQuit(PlayerQuitEvent event){
+        onLeave(event.getPlayer());
     }
 
     @EventHandler
-    public void onPlayerKick(PlayerKickEvent event){
-        Player player = event.getPlayer();
+    private void onPlayerKick(PlayerKickEvent event){
+        onLeave(event.getPlayer());
+    }
+
+    private void onLeave(Player player) {
         PrisonScoreboardManager.removeScoreboard(player.getUniqueId());
         for(Player pl : Bukkit.getOnlinePlayers()){
-            if(!pl.getUniqueId().toString().equals(event.getPlayer().getUniqueId().toString())) {
+            if(!pl.getUniqueId().toString().equals(player.getUniqueId().toString())) {
                 PrisonScoreboardManager psm = PrisonScoreboardManager.getManager(pl.getUniqueId());
                 psm.updateScoreboard();
             }
         }
     }
-
 }

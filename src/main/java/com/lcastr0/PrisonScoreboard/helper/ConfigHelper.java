@@ -13,6 +13,15 @@ public class ConfigHelper {
     private static PrisonScoreboard instance = PrisonScoreboard.getInstance();
     private static List<Rank> ranks = new ArrayList<>();
     private static ScoreboardHelper scoreboardHelper;
+    
+    private static boolean titleScroll;
+    private static boolean useDefaultWorld;
+    private static int dropPartyVotes;
+    private static String maxRankScore;
+    private static String defaultWorld;
+    private static String boardTitle;
+    private static String[] titleConfig;
+    private static String[] progressConfig;
 
     public static List<Rank> getRanks(){
         if(ranks.size() != 0)
@@ -60,46 +69,39 @@ public class ConfigHelper {
     }
 
     public static String getLastRankString(){
-        return instance.getConfig().getString("maxRankScore");
+        return maxRankScore;
     }
 
     public static ScoreboardHelper getScoreboard(){
         if(scoreboardHelper != null)
             return scoreboardHelper;
-        String title = instance.getConfig().getString("scoreboard.title.text");
+        String title = boardTitle;
         scoreboardHelper = new ScoreboardHelper(title);
         return scoreboardHelper;
     }
 
     public static int getDropPartyVotes(){
-        return instance.getConfig().getInt("dropPartyVotes");
+        return dropPartyVotes;
     }
 
     public static boolean titleScroll(){
-        return instance.getConfig().getBoolean("scoreboard.title.scroll.canScroll");
+    	return titleScroll;
     }
 
     public static String[] getTitleConfig(){
-        String[] s = {instance.getConfig().getString("scoreboard.title.scroll.scrollColors.text"), instance.getConfig().getString("scoreboard.title.scroll.scrollColors.before"),
-                instance.getConfig().getString("scoreboard.title.scroll.scrollColors.during"), instance.getConfig().getString("scoreboard.title.scroll.scrollColors.after"),
-                String.valueOf(instance.getConfig().getString("scoreboard.title.scroll.scrollType"))};
-        return s;
+        return titleConfig;
     }
 
     public static String[] getProgressBarConfig(){
-        String[] s = {instance.getConfig().getString("scoreboard.progressBar.colors.currentRank"), instance.getConfig().getString("scoreboard.progressBar.colors.nextRank"),
-                instance.getConfig().getString("scoreboard.progressBar.colors.nextRankReached"), instance.getConfig().getString("scoreboard.progressBar.colors.barReached"),
-                instance.getConfig().getString("scoreboard.progressBar.colors.barNotReached"), instance.getConfig().getString("scoreboard.progressBar.character"),
-                String.valueOf(instance.getConfig().getString("scoreboard.progressBar.size"))};
-        return s;
+        return progressConfig;
     }
 
     public static boolean useDefaultWorld(){
-        return instance.getConfig().getBoolean("scoreboard.kills.useDefaultWorld");
+        return useDefaultWorld;
     }
 
     public static String getDefaultWorld(){
-        return instance.getConfig().getString("scoreboard.kills.defaultWorld");
+        return defaultWorld;
     }
 
     public static void getTags(){
@@ -113,4 +115,20 @@ public class ConfigHelper {
         }
     }
 
+    public static void setConfigValues() {
+        titleScroll = instance.getConfig().getBoolean("scoreboard.title.scroll.canScroll");
+        useDefaultWorld = instance.getConfig().getBoolean("scoreboard.kills.useDefaultWorld");
+        dropPartyVotes = instance.getConfig().getInt("dropPartyVotes");
+        maxRankScore = instance.getConfig().getString("maxRankScore");
+        defaultWorld = instance.getConfig().getString("scoreboard.kills.defaultWorld");
+        boardTitle = instance.getConfig().getString("scoreboard.title.text");
+        titleConfig = new String[] {instance.getConfig().getString("scoreboard.title.scroll.scrollColors.text"), instance.getConfig().getString("scoreboard.title.scroll.scrollColors.before"),
+                instance.getConfig().getString("scoreboard.title.scroll.scrollColors.during"), instance.getConfig().getString("scoreboard.title.scroll.scrollColors.after"),
+                String.valueOf(instance.getConfig().getString("scoreboard.title.scroll.scrollType"))};
+        progressConfig = new String[] {instance.getConfig().getString("scoreboard.progressBar.colors.currentRank"), instance.getConfig().getString("scoreboard.progressBar.colors.nextRank"),
+                instance.getConfig().getString("scoreboard.progressBar.colors.nextRankReached"), instance.getConfig().getString("scoreboard.progressBar.colors.barReached"),
+                instance.getConfig().getString("scoreboard.progressBar.colors.barNotReached"), instance.getConfig().getString("scoreboard.progressBar.character"),
+                String.valueOf(instance.getConfig().getString("scoreboard.progressBar.size"))};
+    }
+    
 }

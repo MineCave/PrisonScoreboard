@@ -38,9 +38,11 @@ public class PrisonScoreboard extends JavaPlugin {
         this.getCommand("psvote").setExecutor(new VoteCommand());
         this.linesList = this.getConfig().getStringList("scoreboard.lines");
         setupEcon();
+        ConfigHelper.setConfigValues();
         ConfigHelper.getRanks();
         ConfigHelper.getScoreboard();
         ConfigHelper.getTags();
+        PrisonScoreboardManager.setVariables();
         updateScoreboard();
     }
 
