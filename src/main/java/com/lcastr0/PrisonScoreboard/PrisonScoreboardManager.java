@@ -7,8 +7,10 @@ import com.lcastr0.PrisonScoreboard.helper.ProgressBar;
 import com.lcastr0.PrisonScoreboard.helper.ScoreboardCreator;
 import com.lcastr0.PrisonScoreboard.obj.Rank;
 import com.minecave.KillCounter.obj.KillPlayer;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import ru.tehkode.permissions.PermissionGroup;
 import ru.tehkode.permissions.PermissionUser;
@@ -31,9 +33,12 @@ public class PrisonScoreboardManager {
     public boolean update = false;
     public Map<Integer, String> lines = Maps.newLinkedHashMap();
 
+    private List<String> linesList = new ArrayList<>();
+
     public PrisonScoreboardManager(UUID uuid){
         this.uuid = uuid;
         this.title = ConfigHelper.getScoreboard().getTitle();
+        this.linesList = instance.getConfig().getStringList("scoreboard.lines");
         managers.put(uuid, this);
     }
 
@@ -53,8 +58,8 @@ public class PrisonScoreboardManager {
                     this.scoreboardCreator = new ScoreboardCreator(this.title);
                 next = false;
             }
-            int i = PrisonScoreboard.getInstance().getConfig().getStringList("scoreboard.lines").size();
-            for (String line : PrisonScoreboard.getInstance().getConfig().getStringList("scoreboard.lines")) {
+            int i = linesList.size();
+            for (String line : linesList) {
                 String formattedMoney;
                 long playerMoney = (long) this.getMoney(player);
                 if (playerMoney >= 1000000000000L)
@@ -67,7 +72,7 @@ public class PrisonScoreboardManager {
                     formattedMoney = String.valueOf(new DecimalFormat("0.00K").format((playerMoney * 1.0D / 1000)));
                 else
                     formattedMoney = String.valueOf(playerMoney);
-                String money = "\\$ " + formattedMoney;
+                String money = "$ " + formattedMoney;
 
                 String rank = "ERROR!";
 
@@ -87,13 +92,18 @@ public class PrisonScoreboardManager {
                     world = player.getWorld().getName();
                 String kills = String.valueOf(KillPlayer.getKillPlayer(player.getUniqueId()).getKills(world));
                 if(!isRankedRank())
-                    line = line.replaceAll("%rpb", ChatColor.RED + "No next rank!");
+                    line = StringUtils.replace(line, "%rpb", ChatColor.RED + "No next rank!");
                 else
-                    line = line.replaceAll("%rpb", this.getRankProgress());
-                line = line.replaceAll("%m", money).replaceAll("%r", rank)
+                    line = StringUtils.replace(line, "%rpb", this.getRankProgress());
+                line = StringUtils.replace(line, "%m", money);
+                line = StringUtils.replace(line, "%r", rank);
+                line = StringUtils.replace(line, "%o", String.valueOf(Bukkit.getOnlinePlayers().size()));
+                line = StringUtils.replace(line, "%d", this.instance.receiver.getVotes() + " / " + ConfigHelper.getDropPartyVotes());
+                line = StringUtils.replace(line, "%k", kills);
+                /*line = line.replaceAll("%m", money).replaceAll("%r", rank)
                         .replaceAll("%o", String.valueOf(Bukkit.getOnlinePlayers().size()))
                         .replaceAll("%d", this.instance.receiver.getVotes() + " / " + ConfigHelper.getDropPartyVotes()).replaceAll("%k",
-                                kills);
+                                kills);*/
                 line = ChatColor.translateAlternateColorCodes('&', line);
                 if (line.contains("{blank}")) {
                     this.scoreboardCreator.blank(i);
@@ -150,7 +160,8 @@ public class PrisonScoreboardManager {
                 Rank r = ConfigHelper.getRank(rank);
                 r.addPlayer(player.getUniqueId());
                 if(r.getName().equalsIgnoreCase("OWNER") || r.getName().equalsIgnoreCase("CO-OWNER")
-                        || r.getName().equalsIgnoreCase("DEV") || r.getName().equalsIgnoreCase("MOD"))
+                        || r.getName().equalsIgnoreCase("DEV") || r.getName().equalsIgnoreCase("MOD")
+                        || r.getName().equalsIgnoreCase("ADMIN"))
                     return false;
             }
         }
@@ -175,7 +186,8 @@ public class PrisonScoreboardManager {
                 Rank r = ConfigHelper.getRank(rank);
                 r.addPlayer(player.getUniqueId());
                 if(r.getName().equalsIgnoreCase("OWNER") || r.getName().equalsIgnoreCase("CO-OWNER")
-                        || r.getName().equalsIgnoreCase("DEV") || r.getName().equalsIgnoreCase("MOD"))
+                        || r.getName().equalsIgnoreCase("DEV") || r.getName().equalsIgnoreCase("MOD")
+                        || r.getName().equalsIgnoreCase("ADMIN"))
                     return instance.getConfig().getString("scoreboard.progressBar.customText.text");
                 Rank nr = ConfigHelper.getNext(r);
                 if(nr == null)

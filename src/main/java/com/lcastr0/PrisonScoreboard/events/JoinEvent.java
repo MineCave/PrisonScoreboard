@@ -23,22 +23,24 @@ public class JoinEvent implements Listener {
                     String prefix = PlayerTag.getPrefix(player), suffix = PlayerTag.getSuffix(player);
                     for (Player pl : Bukkit.getOnlinePlayers()) {
                         PrisonScoreboardManager psm = PrisonScoreboardManager.getManager(pl.getUniqueId());
-                        psm.updateScoreboard();
-                        Scoreboard score = psm.scoreboardCreator.scoreboard;
-                        Team team = score.getTeam(player.getUniqueId().toString().substring(0, 15));
-                        if (team != null) {
-                            if (!prefix.equals("NONE"))
-                                team.setPrefix(ChatColor.translateAlternateColorCodes('&', prefix));
-                            if (!suffix.equals("NONE"))
-                                team.setSuffix(ChatColor.translateAlternateColorCodes('&', suffix));
-                            team.addPlayer(player);
-                        } else {
-                            team = score.registerNewTeam(player.getUniqueId().toString().substring(0, 15));
-                            if (!prefix.equals("NONE"))
-                                team.setPrefix(ChatColor.translateAlternateColorCodes('&', prefix));
-                            if (!suffix.equals("NONE"))
-                                team.setSuffix(ChatColor.translateAlternateColorCodes('&', suffix));
-                            team.addPlayer(player);
+                        if(psm != null) {
+                            psm.updateScoreboard();
+                            Scoreboard score = psm.scoreboardCreator.scoreboard;
+                            Team team = score.getTeam(player.getUniqueId().toString().substring(0, 15));
+                            if (team != null) {
+                                if (!prefix.equals("NONE"))
+                                    team.setPrefix(ChatColor.translateAlternateColorCodes('&', prefix));
+                                if (!suffix.equals("NONE"))
+                                    team.setSuffix(ChatColor.translateAlternateColorCodes('&', suffix));
+                                team.addPlayer(player);
+                            } else {
+                                team = score.registerNewTeam(player.getUniqueId().toString().substring(0, 15));
+                                if (!prefix.equals("NONE"))
+                                    team.setPrefix(ChatColor.translateAlternateColorCodes('&', prefix));
+                                if (!suffix.equals("NONE"))
+                                    team.setSuffix(ChatColor.translateAlternateColorCodes('&', suffix));
+                                team.addPlayer(player);
+                            }
                         }
                     }
                 }
