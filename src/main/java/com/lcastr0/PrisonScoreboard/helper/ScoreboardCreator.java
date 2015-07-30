@@ -42,7 +42,7 @@ public class ScoreboardCreator {
 
     public String fixString(String text){
         while (this.lines.containsKey(text))
-            text += "§r";
+            text += "Â§r";
         return text;
     }
 

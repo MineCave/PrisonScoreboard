@@ -1,26 +1,37 @@
 package com.lcastr0.PrisonScoreboard;
 
-import com.google.common.collect.Maps;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
+import ru.tehkode.permissions.PermissionGroup;
+import ru.tehkode.permissions.PermissionUser;
+import ru.tehkode.permissions.bukkit.PermissionsEx;
+
 import com.lcastr0.PrisonScoreboard.helper.Color;
 import com.lcastr0.PrisonScoreboard.helper.ConfigHelper;
 import com.lcastr0.PrisonScoreboard.helper.ProgressBar;
 import com.lcastr0.PrisonScoreboard.helper.ScoreboardCreator;
 import com.lcastr0.PrisonScoreboard.obj.Rank;
 import com.minecave.KillCounter.obj.KillPlayer;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import ru.tehkode.permissions.PermissionGroup;
-import ru.tehkode.permissions.PermissionUser;
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-
-import java.text.DecimalFormat;
-import java.util.*;
 
 public class PrisonScoreboardManager {
 
+	private static DecimalFormat tFormat;
+	private static DecimalFormat bFormat;
+	private static DecimalFormat mFormat;
+	private static DecimalFormat kFormat;
+	private static String barText;
+	private static boolean textEnabled;
+	
     public static Map<UUID, PrisonScoreboardManager> managers = new HashMap<>();
 
     public final UUID uuid;
@@ -31,7 +42,7 @@ public class PrisonScoreboardManager {
     public Color cs;
     public ProgressBar pBar;
     public boolean update = false;
-    public Map<Integer, String> lines = Maps.newLinkedHashMap();
+    private Map<Integer, String> lines;
 
     private List<String> linesList = new ArrayList<>();
 
@@ -63,13 +74,13 @@ public class PrisonScoreboardManager {
                 String formattedMoney;
                 long playerMoney = (long) this.getMoney(player);
                 if (playerMoney >= 1000000000000L)
-                    formattedMoney = String.valueOf(new DecimalFormat("0.00T").format((playerMoney * 1.0D / 1000000000000L)));
+                    formattedMoney = String.valueOf(tFormat.format((playerMoney * 1.0D / 1000000000000L)));
                 else if (playerMoney >= 1000000000)
-                    formattedMoney = String.valueOf(new DecimalFormat("0.00B").format((playerMoney * 1.0D / 1000000000)));
+                    formattedMoney = String.valueOf(bFormat.format((playerMoney * 1.0D / 1000000000)));
                 else if (playerMoney >= 1000000)
-                    formattedMoney = String.valueOf(new DecimalFormat("0.00M").format((playerMoney * 1.0D / 1000000)));
+                    formattedMoney = String.valueOf(mFormat.format((playerMoney * 1.0D / 1000000)));
                 else if (playerMoney >= 1000)
-                    formattedMoney = String.valueOf(new DecimalFormat("0.00K").format((playerMoney * 1.0D / 1000)));
+                    formattedMoney = String.valueOf(kFormat.format((playerMoney * 1.0D / 1000)));
                 else
                     formattedMoney = String.valueOf(playerMoney);
                 String money = "$ " + formattedMoney;
@@ -188,7 +199,7 @@ public class PrisonScoreboardManager {
                 if(r.getName().equalsIgnoreCase("OWNER") || r.getName().equalsIgnoreCase("CO-OWNER")
                         || r.getName().equalsIgnoreCase("DEV") || r.getName().equalsIgnoreCase("MOD")
                         || r.getName().equalsIgnoreCase("ADMIN"))
-                    return instance.getConfig().getString("scoreboard.progressBar.customText.text");
+                    return barText;
                 Rank nr = ConfigHelper.getNext(r);
                 if(nr == null)
                     return ChatColor.translateAlternateColorCodes('&', ConfigHelper.getLastRankString());
@@ -205,10 +216,10 @@ public class PrisonScoreboardManager {
                 }
                 ChatColor[] c = {ChatColor.getByChar(s[0]), ChatColor.getByChar(s[1]), ChatColor.getByChar(s[2])};
                 String progress = this.pBar.getProgressBar();
-                if(this.pBar.isComplete() && !instance.getConfig().getBoolean("scoreboard.progressBar.customText.enabled"))
+                if(this.pBar.isComplete() && !textEnabled)
                     return c[0] + current + " " + progress + " " + next;
                 else if(this.pBar.isComplete())
-                    return instance.getConfig().getString("scoreboard.progressBar.customText.text");
+                    return barText;
                 return c[0] + current + " " + progress + " " + next;
             }
         }
@@ -259,4 +270,13 @@ public class PrisonScoreboardManager {
         }
     }
 
+    public static void setVariables() {
+    	tFormat = new DecimalFormat("0.00T");
+    	bFormat = new DecimalFormat("0.00B");
+    	mFormat = new DecimalFormat("0.00M");
+    	kFormat = new DecimalFormat("0.00K");
+    	barText = PrisonScoreboard.getInstance().getConfig().getString("scoreboard.progressBar.customText.text");
+    	textEnabled = PrisonScoreboard.getInstance().getConfig().getBoolean("scoreboard.progressBar.customText.enabled");
+    }
+    
 }
