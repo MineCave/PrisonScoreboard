@@ -18,12 +18,12 @@ public class ProgressBar {
         this.character = character;
     }
 
-    public void setMax(long max){
-        this.max = max;
+    public void setMax(double max){
+        this.max = (long) max;
     }
 
-    public void setCurrent(long current){
-        this.current = current;
+    public void setCurrent(double current){
+        this.current = (long) current;
     }
 
     public String getProgressBar(){

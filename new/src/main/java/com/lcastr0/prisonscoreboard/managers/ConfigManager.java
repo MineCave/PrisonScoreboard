@@ -1,30 +1,39 @@
 package com.lcastr0.prisonscoreboard.managers;
 
 import com.lcastr0.prisonscoreboard.PrisonScoreboard;
+import com.lcastr0.prisonscoreboard.objects.Prefix;
 import com.lcastr0.prisonscoreboard.objects.Rank;
+import com.lcastr0.prisonscoreboard.objects.Suffix;
+import com.lcastr0.prisonscoreboard.utils.CustomConfig;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigManager {
 
     private final PrisonScoreboard instance = PrisonScoreboard.getInstance();
 
-    private String title, world, maxRankScore;
+    private String title, world, maxRankScore, customText;
     private String[] progressBar;
     private List<String> lines;
-    private List<Rank> ranks;
-    private boolean defaultWorld;
-    private int votes;
+    private Map<Integer, Rank> ranks = new HashMap<>();
+    private boolean defaultWorld, customTextEnable;
+    private int maxRank;
 
     public ConfigManager(){
         this.title = instance.getConfig("config").get("title", String.class);
         this.world = instance.getConfig("config").get("world.name", String.class);
         this.maxRankScore = instance.getConfig("config").get("maxRankScore", String.class);
+        this.customText = instance.getConfig("config").get("customText", String.class);
         this.lines = instance.getConfig("lines").getConfig().getStringList("lines");
-        this.defaultWorld = instance.getConfig("config").get("world.useDefault", Boolean.class);
-        this.votes = instance.getConfig("config").get("votes", Integer.class);
+        this.defaultWorld = instance.getConfig("config").get("world.useDefaultWorld", Boolean.class);
+        this.customTextEnable = instance.getConfig("config").get("customTextEnabled", Boolean.class);
+        this.maxRank = instance.getConfig("config").get("max-rank-value", Integer.class);
         this.setProgressBar();
         this.setRanks();
+        this.setPrefixes();
+        this.setSuffixes();
     }
 
     private void setProgressBar(){
@@ -39,7 +48,7 @@ public class ConfigManager {
     }
 
     private void setRanks(){
-        int rankValue = instance.getConfig("rankConfigs").get("max-rank-value", Integer.class);
+        int rankValue = this.maxRank;
         List<String> rankList = instance.getConfig("ranks").getConfig().getStringList("ranks");
         for(String rank : rankList){
             String name = rank.substring(0, rank.indexOf(':'));
@@ -56,8 +65,30 @@ public class ConfigManager {
             } else {
                 newRank = new Rank(name, money, rankValue);
             }
-            this.ranks.add(newRank);
+            this.ranks.put(newRank.getRank(), newRank);
             rankValue--;
+        }
+    }
+
+    private void setPrefixes(){
+        CustomConfig prefixes = instance.getConfig("prefixes");
+        for(String prefix : prefixes.getConfig().getStringList("prefixes.list")){
+            String confPath = "prefixes." + prefix + ".";
+            String tag = prefixes.get(confPath + "tag", String.class);
+            String permission = prefixes.get(confPath + "permission", String.class);
+            Prefix pre = new Prefix(tag, permission, prefix);
+            ObjectManager.addPrefix(pre);
+        }
+    }
+
+    private void setSuffixes(){
+        CustomConfig prefixes = instance.getConfig("prefixes");
+        for(String suffix : prefixes.getConfig().getStringList("suffixes.list")){
+            String confPath = "suffixes." + suffix + ".";
+            String tag = prefixes.get(confPath + "tag", String.class);
+            String permission = prefixes.get(confPath + "permission", String.class);
+            Suffix su = new Suffix(tag, permission, suffix);
+            ObjectManager.addSuffix(su);
         }
     }
 
@@ -73,6 +104,10 @@ public class ConfigManager {
         return this.maxRankScore;
     }
 
+    public String getCustomText(){
+        return this.customText;
+    }
+
     public String[] getProgressBar(){
         return this.progressBar;
     }
@@ -81,16 +116,28 @@ public class ConfigManager {
         return this.lines;
     }
 
-    public List<Rank> getRanks(){
+    public Map<Integer, Rank> getRanks(){
         return this.ranks;
+    }
+
+    public Rank getRank(Integer rank){
+        return this.ranks.get(rank);
+    }
+
+    public Rank getNextRank(Integer rank){
+        return this.getRank(rank - 1);
     }
 
     public boolean isDefaultWorld(){
         return this.defaultWorld;
     }
 
-    public int getVotes(){
-        return this.votes;
+    public boolean isCustomTextEnable(){
+        return this.customTextEnable;
+    }
+
+    public int getMaxRank(){
+        return this.maxRank;
     }
 
 }

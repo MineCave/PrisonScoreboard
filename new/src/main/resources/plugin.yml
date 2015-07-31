@@ -1,0 +1,7 @@
+name: PrisonScoreboard
+version: 2.0
+author: LCastr0
+main: com.lcastr0.prisonscoreboard.PrisonScoreboard
+depend: [Votifier, PermissionsEx, Vault, KillCounter, Craftconomy3]
+commands:
+  psvote:

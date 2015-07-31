@@ -1,0 +1,30 @@
+prefixes:
+  list:
+  - coal
+  - iron
+  coal:
+    tag: '&0[COAL] '
+    permission: 'prison.tag.coal'
+  iron:
+    tag: '&8[IRON] '
+    permission: 'prison.tag.iron'
+  owner:
+    tag: '&c[OWNER] '
+    permission: '*'
+    players:
+    - '3c249187-14c3-407b-82cd-1087c09d4417'
+suffixes:
+  list:
+  - gold
+  - diamond
+  gold:
+    tag: '&6[GOLD] '
+    permission: 'prison.tag.gold'
+  diamond:
+    tag: '&b[DIAMOND] '
+    permission: 'prison.tag.diamond'
+  owner:
+      tag: ''
+      permission: '*'
+      players:
+      - '3c249187-14c3-407b-82cd-1087c09d4417'

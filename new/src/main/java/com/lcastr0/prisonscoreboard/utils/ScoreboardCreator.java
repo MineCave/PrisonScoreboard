@@ -2,7 +2,6 @@ package com.lcastr0.prisonscoreboard.utils;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.lcastr0.prisonscoreboard.managers.ObjectManager;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -24,7 +23,7 @@ public class ScoreboardCreator {
     private Objective objective;
 
     public ScoreboardCreator(String title){
-        this.scoreboard = ObjectManager.getScoreboard();
+        this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
         this.title = title;
     }
 
@@ -88,12 +87,16 @@ public class ScoreboardCreator {
         }
     }
 
-    public void removePlayer(Player player){
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-    }
-
     public void update(){
         this.build();
+    }
+
+    public Scoreboard getScoreboard(){
+        return this.scoreboard;
+    }
+
+    public static void removePlayer(Player player){
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
 
 }

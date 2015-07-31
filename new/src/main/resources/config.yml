@@ -1,0 +1,20 @@
+title: '&b&lMinecave&6&l-&b&lPrison'
+world:
+  name: 'world'
+  useDefaultWorld: false
+customText: '&aDo /rankup to go to the next rank!'
+customTextEnabled: true
+votes: 0
+max-rank-value: 1000
+maxRank: P1010
+maxVotes: 200
+maxRankScore: '&cMaxed!'
+progressBar:
+  character: '|'
+  size: 25
+  colors:
+    currentRank: 'b'
+    nextRank: 'e'
+    nextRankReached: 'b'
+    barReached: 'a'
+    barNotReached: 'c'

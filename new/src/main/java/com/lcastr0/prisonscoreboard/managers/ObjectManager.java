@@ -3,9 +3,6 @@ package com.lcastr0.prisonscoreboard.managers;
 import com.lcastr0.prisonscoreboard.objects.Prefix;
 import com.lcastr0.prisonscoreboard.objects.Rank;
 import com.lcastr0.prisonscoreboard.objects.Suffix;
-import org.bukkit.Bukkit;
-import org.bukkit.scoreboard.Scoreboard;
-
 import java.util.*;
 
 public class ObjectManager {
@@ -15,7 +12,6 @@ public class ObjectManager {
     private static List<Prefix> prefixes = new ArrayList<>();
     private static List<Suffix> suffixes = new ArrayList<>();
     private static ConfigManager manager = new ConfigManager();
-    private static Scoreboard scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
     public static void addManager(UUID uuid, ScoreboardManager scoreboardManager){
         scoreboardManagers.put(uuid, scoreboardManager);
@@ -45,6 +41,14 @@ public class ObjectManager {
         return scoreboardManagers.keySet();
     }
 
+    public static ScoreboardManager getScoreboardManager(UUID uuid){
+        if(scoreboardManagers.containsKey(uuid))
+            return scoreboardManagers.get(uuid);
+        ScoreboardManager manager = new ScoreboardManager(uuid);
+        scoreboardManagers.put(uuid, manager);
+        return manager;
+    }
+
     public static List<Rank> getRanks(){
         return ranks;
     }
@@ -59,10 +63,6 @@ public class ObjectManager {
 
     public static ConfigManager getManager(){
         return manager;
-    }
-
-    public static Scoreboard getScoreboard(){
-        return scoreboard;
     }
 
 }
